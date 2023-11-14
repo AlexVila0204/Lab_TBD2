@@ -3,6 +3,7 @@ package com.mycompany.proyecto;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -22,7 +23,8 @@ public class Proyecto {
     static DynamoDB dynamoDB = new DynamoDB(cliente);
 
     public static void main(String[] args) {
-        LeerAtributosTabla("Vehiculos");
+        Table tabla = dynamoDB.getTable("Clases");
+        System.out.println(tabla.getDescription());
     }
     //metodo universal para crear un item
 
@@ -67,7 +69,7 @@ public class Proyecto {
 
                     //creacion de un item
                     Item item = new Item()
-                            .withPrimaryKey("cedula", "1234567")
+                            .withPrimaryKey("cedula", "343434343")
                             .withString("nombre", "Wilmer")
                             .withString("apellido_1", "Antonio")
                             .withString("apellido_2", "Zuniga")
@@ -93,7 +95,7 @@ public class Proyecto {
 
                     //creacion de un item
                     Item item = new Item()
-                            .withPrimaryKey("n_matricula", 1)
+                            .withPrimaryKey("matricula", 1)
                             .withString("dni_alumno", "1234567")
                             .withString("tipo_lic", "B")
                             .withString("fecha_matricula", "2020-01-01");
@@ -106,7 +108,7 @@ public class Proyecto {
 
                     //creacion de un item
                     Item item = new Item()
-                            .withPrimaryKey("id_clase", 1)
+                            .withPrimaryKey("id_clase", 2)
                             .withString("fecha", "12-11-23")
                             .withString("hora_inicio", "10:00:00")
                             .withString("hora_fin", "11:00:00")
@@ -141,7 +143,7 @@ public class Proyecto {
         } catch (Exception e) {
             System.err.println("Error al crear el item: " + e.getMessage());
         }
-
+        System.out.println("WEA CREADA");
     }
 
     //metodo universal para leer un item
@@ -211,6 +213,7 @@ public class Proyecto {
                             System.out.println("Se elimino la clase con fecha: " + item.get("fecha_clase"));
                         }
                     });
+                    System.out.println(jsonArray);
                     //imprimir los items de la clase a eliminar
                     System.out.println(tabla.getItem("matricula", llavePrimaria));
                     tabla.deleteItem("matricula", llavePrimaria);
@@ -289,6 +292,111 @@ public class Proyecto {
             }
         } catch (Exception e) {
             System.err.println("Error al eliminar el item: " + e.getMessage());
+        }
+
+    }
+    
+    //Metodo universal para modificar un item
+    public static void modificarItem(String nombreTabla, String llavePrimaria, String nombreAtributo, String datoModificacion){
+        try {
+            Table tabla = dynamoDB.getTable(nombreTabla);
+            if (tabla.describe() == null) {
+                throw new Exception("La tabla no existe");
+            }
+            switch (nombreTabla) {
+                case "Vehiculos": {
+                   //Modificar datos de la tabla vehiculo
+                    if (tabla.getItem("matricula", llavePrimaria) == null) {
+                        throw new Exception("La llave primaria no existe");
+                    }
+                    //Listar item que van a ser modificados
+                    System.out.println(tabla.getItem("matricula", llavePrimaria));
+                   tabla.updateItem("matricula", llavePrimaria, new AttributeUpdate(nombreAtributo).put(datoModificacion));
+                    System.out.println("Se modifico el valor de: " + nombreAtributo + " a: " + datoModificacion + " en la tabla: " + nombreTabla);
+                }
+                break;
+                case "Profesores": {
+                    //modificar datos de la tabla profesores
+                    if (tabla.getItem("cedula", llavePrimaria) == null) {
+                        throw new Exception("La llave primaria no existe");
+                    }
+                    //Listar item que van a ser modificados
+                    System.out.println(tabla.getItem("cedula", llavePrimaria));
+                    tabla.updateItem("cedula", llavePrimaria, new AttributeUpdate(nombreAtributo).put(datoModificacion));
+                    System.out.println("Se modifico el valor de: " + nombreAtributo + " a: " + datoModificacion + " en la tabla: " + nombreTabla);
+
+                }
+
+                break;
+                case "Alumno": {
+                    //modificar datos de la tabla alumnos
+                    if (tabla.getItem("cedula", llavePrimaria) == null) {
+                        throw new Exception("La llave primaria no existe");
+                        
+                    }
+                    //Listar item que van a ser modificados
+                    System.out.println(tabla.getItem("cedula", llavePrimaria));
+                    tabla.updateItem("cedula", llavePrimaria, new AttributeUpdate(nombreAtributo).put(datoModificacion));
+                    System.out.println("Se modifico el valor de: " + nombreAtributo + " a: " + datoModificacion + " en la tabla: " + nombreTabla);
+
+                }
+                break;
+                case "Documentacion": {
+                    //modificar datos de la tabla documentacion
+                    if (tabla.getItem("tipo_doc", llavePrimaria) == null) {
+                        throw new Exception("La llave primaria no existe");
+                    }
+                    //Listar item que van a ser modificados
+                    System.out.println(tabla.getItem("tipo_doc", llavePrimaria));
+                    tabla.updateItem("tipo_doc", llavePrimaria, new AttributeUpdate(nombreAtributo).put(datoModificacion));
+                    System.out.println("Se modifico el valor de: " + nombreAtributo + " a: " + datoModificacion + " en la tabla: " + nombreTabla);
+                   
+
+                }
+                break;
+                case "Matriculas": {
+                    //modificar datos de la tabla matriculas
+                    if (tabla.getItem("n_matricula", llavePrimaria) == null) {
+                        throw new Exception("La llave primaria no existe");
+                    }
+                    //Listar item que van a ser modificados
+                    System.out.println(tabla.getItem("n_matricula", llavePrimaria));
+                    tabla.updateItem("n_matricula", llavePrimaria, new AttributeUpdate(nombreAtributo).put(datoModificacion));
+                    System.out.println("Se modifico el valor de: " + nombreAtributo + " a: " + datoModificacion + " en la tabla: " + nombreTabla);
+
+                }
+                break;
+                case "Clases": {
+                    //modificar datos de la tabla clases
+                    if (tabla.getItem("id_clase", llavePrimaria) == null) {
+                        throw new Exception("La llave primaria no existe");
+                        
+                    }
+                    //Listar item que van a ser modificados
+                    System.out.println(tabla.getItem("id_clase", llavePrimaria));
+                    tabla.updateItem("id_clase", llavePrimaria, new AttributeUpdate(nombreAtributo).put(datoModificacion));
+                    System.out.println("Se modifico el valor de: " + nombreAtributo + " a: " + datoModificacion + " en la tabla: " + nombreTabla);
+
+
+                }
+                break;
+                case "Examenes": {
+                   //modificar datos de la tabla examenes
+                    if (tabla.getItem("n_examen", llavePrimaria) == null) {
+                        throw new Exception("La llave primaria no existe");
+                    }
+                    //Listar item que van a ser modificados
+                    System.out.println(tabla.getItem("n_examen", llavePrimaria));
+                    tabla.updateItem("n_examen", llavePrimaria, new AttributeUpdate(nombreAtributo).put(datoModificacion));
+                    System.out.println("Se modifico el valor de: " + nombreAtributo + " a: " + datoModificacion + " en la tabla: " + nombreTabla);
+                }
+                break;
+                default: {
+                    throw new Exception("La tabla no existe");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al modificar un item: " + e.getMessage());
         }
 
     }
